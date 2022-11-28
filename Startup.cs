@@ -1,6 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using NASATechAPI.DbContexts;
 using NASATechAPI.Entities;
 using NASATechAPI.Interfaces;
@@ -25,6 +23,7 @@ namespace NASATechAPI
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddScoped<IRepositoryAsync<User>, RepositoryAsync<User>>();
+            services.AddScoped<IRepositoryAsync<UserRoles>, RepositoryAsync<UserRoles>>();
 
             services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

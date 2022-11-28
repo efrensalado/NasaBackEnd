@@ -11,12 +11,14 @@ namespace NASATechAPI.DbContexts
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<UserRoles> Roles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>(entity =>
             {
                 entity.ToTable("Users");
+                entity.HasKey(c => c.Id);
                 //entity.Property(e => e.Descripcion)
                 //    .IsRequired()
                 //    .HasMaxLength(50)
@@ -28,7 +30,11 @@ namespace NASATechAPI.DbContexts
                 //    .HasConstraintName("FK_Categorias_Categorias");
             });
 
-            
+            modelBuilder.Entity<UserRoles>(entity =>
+            {
+                entity.ToTable("UserRoles");
+                entity.HasKey(c => c.Id);
+            });
 
         }
     }

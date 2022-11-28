@@ -45,22 +45,6 @@ namespace NASATechAPI.Controllers
             return null;
         }
 
-        private static string Decrypt(string Encrypted)
-        {
-            byte[] data = Convert.FromBase64String(Encrypted);
-
-            MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
-            TripleDESCryptoServiceProvider tripDES = new TripleDESCryptoServiceProvider();
-
-            tripDES.Key = md5.ComputeHash(UTF8Encoding.UTF8.GetBytes(HASH_STRING));
-            tripDES.Mode = CipherMode.ECB;
-
-            ICryptoTransform transform = tripDES.CreateDecryptor();
-            byte[] result = transform.TransformFinalBlock(data, 0, data.Length);
-
-            return UTF8Encoding.UTF8.GetString(result);
-        }
-
         //this function Convert to Decord your Password
         private string DecodeFrom64(string encodedData)
         {

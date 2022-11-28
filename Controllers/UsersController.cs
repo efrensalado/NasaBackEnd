@@ -5,6 +5,7 @@ using NASATechAPI.Interfaces;
 using NASATechAPI.Models;
 using System.Text;
 using System.Security.Cryptography;
+using System.Linq;
 
 namespace NASATechAPI.Controllers
 {
@@ -13,11 +14,14 @@ namespace NASATechAPI.Controllers
     public class UsersController : Controller
     {
         private readonly IRepositoryAsync<User> _repository;
+        private readonly IRepositoryAsync<UserRoles> _roles;
         private readonly IMapper _mapper;
-        const string HASH_STRING = "Pa$$word!00";
-        public UsersController(IRepositoryAsync<User> repository, IMapper mapper)
+        public UsersController(IRepositoryAsync<User> repository,
+            IRepositoryAsync<UserRoles> roles,
+            IMapper mapper)
         {
             _repository = repository;
+            _roles = roles;
             _mapper = mapper;
         }
 
@@ -26,7 +30,11 @@ namespace NASATechAPI.Controllers
         public async Task<List<UserModel>> Index()
         {
             var data = await _repository.GetAll();
+            var roles = await _roles.GetAll();
+            var userRoles = _mapper.Map<List<UserRoleModel>>(roles);
             var users = _mapper.Map<List<UserModel>>(data);
+
+
             return users;
         }
 
@@ -45,22 +53,6 @@ namespace NASATechAPI.Controllers
                 return null;
             }
             return NewUser;
-        }
-
-        private static string Encrypt(string Decrypted)
-        {
-            byte[] data = UTF8Encoding.UTF8.GetBytes(Decrypted);
-
-            MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
-            TripleDESCryptoServiceProvider tripDES = new TripleDESCryptoServiceProvider();
-
-            tripDES.Key = md5.ComputeHash(UTF8Encoding.UTF8.GetBytes(HASH_STRING));
-            tripDES.Mode = CipherMode.ECB;
-
-            ICryptoTransform transform = tripDES.CreateEncryptor();
-            byte[] result = transform.TransformFinalBlock(data, 0, data.Length);
-
-            return Convert.ToBase64String(result);
         }
 
         //this function Convert to Encord your Password
